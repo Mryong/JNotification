@@ -31,3 +31,5 @@ userInfo.put("key","value");
 
 NotificationCenter.getInstance().postNotification(this,"NotificationName",userInfo);
 ```
+3.联系方式:
+          QQ:76094586
