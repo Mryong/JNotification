@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_jnotification" default="compile.module.jnotification">
+  <dirname property="module.jnotification.basedir" file="${ant.file.module_jnotification}"/>
+  
+  <property name="module.jdk.home.jnotification" value="${jdk.home.1.7}"/>
+  <property name="module.jdk.bin.jnotification" value="${jdk.bin.1.7}"/>
+  <property name="module.jdk.classpath.jnotification" value="jdk.classpath.1.7"/>
+  
+  <property name="compiler.args.jnotification" value="-encoding UTF-8 -source 1.5 -target 1.5 ${compiler.args}"/>
+  
+  <property name="jnotification.output.dir" value="${module.jnotification.basedir}/target/classes"/>
+  <property name="jnotification.testoutput.dir" value="${module.jnotification.basedir}/target/test-classes"/>
+  
+  <path id="jnotification.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="jnotification.module.production.classpath">
+    <path refid="${module.jdk.classpath.jnotification}"/>
+  </path>
+  
+  <path id="jnotification.runtime.production.module.classpath">
+    <pathelement location="${jnotification.output.dir}"/>
+  </path>
+  
+  <path id="jnotification.module.classpath">
+    <path refid="${module.jdk.classpath.jnotification}"/>
+    <pathelement location="${jnotification.output.dir}"/>
+  </path>
+  
+  <path id="jnotification.runtime.module.classpath">
+    <pathelement location="${jnotification.testoutput.dir}"/>
+    <pathelement location="${jnotification.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.jnotification">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.jnotification">
+    <patternset refid="excluded.from.module.jnotification"/>
+  </patternset>
+  
+  <path id="jnotification.module.sourcepath">
+    <dirset dir="${module.jnotification.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="jnotification.module.test.sourcepath">
+    <dirset dir="${module.jnotification.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.jnotification" depends="compile.module.jnotification.production,compile.module.jnotification.tests" description="Compile module jnotification"/>
+  
+  <target name="compile.module.jnotification.production" depends="register.custom.compilers" description="Compile module jnotification; production classes">
+    <mkdir dir="${jnotification.output.dir}"/>
+    <javac2 destdir="${jnotification.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jnotification}/javac">
+      <compilerarg line="${compiler.args.jnotification}"/>
+      <bootclasspath refid="jnotification.module.bootclasspath"/>
+      <classpath refid="jnotification.module.production.classpath"/>
+      <src refid="jnotification.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.jnotification"/>
+    </javac2>
+    
+    <copy todir="${jnotification.output.dir}">
+      <fileset dir="${module.jnotification.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.jnotification.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.jnotification.tests" depends="register.custom.compilers,compile.module.jnotification.production" description="compile module jnotification; test classes" unless="skip.tests">
+    <mkdir dir="${jnotification.testoutput.dir}"/>
+    <javac2 destdir="${jnotification.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jnotification}/javac">
+      <compilerarg line="${compiler.args.jnotification}"/>
+      <bootclasspath refid="jnotification.module.bootclasspath"/>
+      <classpath refid="jnotification.module.classpath"/>
+      <src refid="jnotification.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.jnotification"/>
+    </javac2>
+    
+    <copy todir="${jnotification.testoutput.dir}">
+      <fileset dir="${module.jnotification.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.jnotification" description="cleanup module">
+    <delete dir="${jnotification.output.dir}"/>
+    <delete dir="${jnotification.testoutput.dir}"/>
+  </target>
+</project>
